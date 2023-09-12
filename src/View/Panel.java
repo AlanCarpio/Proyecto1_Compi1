@@ -276,8 +276,18 @@ public class Panel extends javax.swing.JFrame {
             String codigo_fuente = Entrada.getText();
             Generador gen = new Generador();
             Salida.setText(gen.Ejecutar(codigo_fuente, list_D_G,list_json_files,grafica_barras,grafica_pie));
-            //Jfreechart_Barras();
-            Jfreechart_Pie();
+            if (grafica_barras.Get_Titulo().equalsIgnoreCase("")) {
+                
+            }else{
+                Jfreechart_Barras();
+            }
+            if (grafica_pie.Get_Titulo().equalsIgnoreCase("")){
+            
+            }else{
+                Jfreechart_Pie();
+            }
+            
+            grafica_pie = new GraficaPie();
             grafica_barras = new GraficaBarras();
             list_D_G = new DoublyLinkedList();
         }

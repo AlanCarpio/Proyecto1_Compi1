@@ -1,7 +1,7 @@
 package Model;
 
 public class GraficaPie {
-    private String Titulo;
+    private String Titulo = "";
     private DoublyLinkedList Ejex = new DoublyLinkedList();
     private DoublyLinkedList Valores = new DoublyLinkedList();
     public void Set_Titulo(String _Titulo){

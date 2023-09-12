@@ -1,7 +1,7 @@
 package Model;
 
 public class GraficaBarras {
-    private String Titulo;
+    private String Titulo = "";
     private DoublyLinkedList Ejex = new DoublyLinkedList();
     private DoublyLinkedList Valores = new DoublyLinkedList();
     private String Titulox;
