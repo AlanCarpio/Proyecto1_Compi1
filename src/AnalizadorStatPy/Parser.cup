@@ -1,0 +1,350 @@
+package AnalizadorStatPy; 
+import java_cup.runtime.*;
+import Model.DoublyLinkedList;
+import Model.Symbols;
+import Model.Symbols_Json;
+import Model.V_G;
+import Model.GraficaBarras;
+import Model.GraficaPie;
+import Model.DatosEjex;
+import Model.DatosValores;
+//PARSER 
+parser code
+{://Codigo visible
+    public String out = "";
+    public String iteraciones;
+    public int switch_contador;
+    int C_I = 0;
+    public DoublyLinkedList list_json;
+    public DoublyLinkedList list_V_G;
+    public GraficaBarras grafica_barras;
+    public GraficaPie grafica_pie;
+    public void implementar_iteracion(){
+        iteraciones = "";
+        int contador = 0;
+        boolean asd = true; 
+        while(asd){
+            iteraciones = iteraciones + "    ";
+            if(contador == C_I){
+                break;
+            }
+            contador = contador + 1;
+        }
+    }
+    public void List_json(DoublyLinkedList _list_json){
+        list_json = _list_json;
+    }
+    public void div_list_V_G(DoublyLinkedList _list_V_G){
+        list_V_G = _list_V_G;
+    }
+    
+    public void div_list_Grafica_barras(GraficaBarras _grafica_barras){
+        grafica_barras = _grafica_barras;
+    }
+    public void div_list_Grafica_Pie(GraficaPie _grafica_pie){
+        grafica_pie = _grafica_pie;
+    }
+    
+    public void syntax_error(Symbol s){
+        System.out.println("Error R de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+        System.out.println("Error NR de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
+    }
+
+:}
+
+
+terminal String PAR_IZQ,PAR_DER,COR_IZQ,COR_DER,LLAVE_IZQ,LLAVE_DER,DATO_CHAR; // mismo nombre en el archivo lexico
+terminal String MAS,MENOS,POR,DIV,PTCOMA,DOSPUT,PUNTO,IGUAL,DOLLAR,COMA,MENOR,MAYOR,DISTINTO;
+terminal String VOID,MAIN;
+terminal String IF,ELSE,WHILE,DO,CASE,BRAKE,DEFAULT,CONSOLE,WRITE,FOR,SWITCH,DEFINIR_GLOVALES,GRAFICA_BARRAS,GRAFICA_PIE,NEWVALOR;
+terminal String TITULO,EJEX,VALORES,TITULOX,TITULOY;
+
+terminal String STRING,INT,FLOAT,CHAR,BOOL,DOUBLE,TRUE,FALSE;
+//Expresiones Regulares
+terminal String ENTERO,DECIMAL,DATO_STRING,NOMBRE_DATO;
+                             // para la precedencia para los negativos y no en 
+
+non terminal ini;                                   // terminales para las transiciones 
+non terminal void_main;
+non terminal void_main_aux;
+non terminal  sentencias;
+non terminal  sentencia;
+non terminal  sentencias_aux;
+non terminal  sentencia_aux;
+non terminal  sentencias_graficar;
+non terminal  sentencia_graficar;
+non terminal  String sentencias_ejex;
+non terminal   String sentencias_valores;
+non terminal  sentencias_valores_datos;
+non terminal  sentencias_ejex_valores;
+non terminal  String [] sentencia_tipo_dato;
+non terminal  sentencia_if_else;
+non terminal  sentencia_for;
+non terminal  sentencia_while;
+non terminal  sentencia_definir_globales;
+non terminal  sentencia_grafica_barras;
+non terminal  sentencia_grafica_pie;
+non terminal  sentencias_graficar_pie;
+non terminal  sentencia_graficar_pie;
+non terminal  sentencias_ejex_pie;
+non terminal  sentencias_ejex_valores_pie;
+non terminal  sentencias_valores_datos_pie;
+non terminal  sentencias_valores_pie;
+non terminal  sentencia_do_while;
+non terminal  sentencia_do_while_aux;
+non terminal  sentencia_do_while_aux_2;
+// terminales Switch
+non terminal  sentencia_switch;
+non terminal  String sentencias_valores_switch;
+non terminal  String sentencia_valores_switch;
+non terminal  console_write;
+non terminal  console_write_variables;
+non terminal  String parametros_if_else;
+non terminal String parametros_while;
+non terminal String sentencia_for_parametros;
+non terminal String True_False;
+non terminal String entero_y_signos;
+non terminal String entero_y_signos_val;
+
+//non terminal String expresion;                      // el Double es el tipo que retorna la expresion 
+
+//precedence left MAS,MENOS;                          // precedencia de operadores 
+//precedence left POR,DIV;
+//precedence right UMENOS; 
+
+start with ini;                                     // iniciar la gramataica 
+
+ini::=void_main;                                // produccion inicial 
+void_main ::=
+   VOID MAIN PAR_IZQ PAR_DER LLAVE_IZQ {:out = out + "def main( ):\n";:} void_main_aux
+   
+;
+void_main_aux::=
+    {:C_I = C_I+1;implementar_iteracion();:} sentencias {:out = out + "if__name__ = “__main__”:\n"+iteraciones+"main()";:} LLAVE_DER {:C_I = C_I - 1;implementar_iteracion();:}
+    | LLAVE_DER {:out = out + "if__name__ = “__main__”:\n"+"   "+"main()";:}
+;
+
+sentencias::= 
+    sentencias sentencia
+    |sentencia 
+    
+    
+;
+sentencia::=
+    sentencia_tipo_dato
+    | sentencia_if_else
+    | console_write
+    | sentencia_for
+    | sentencia_while
+    | sentencia_do_while
+    | sentencia_definir_globales
+    | sentencia_grafica_barras
+    | sentencia_switch
+    | sentencia_grafica_pie
+    | BRAKE PTCOMA
+    
+    
+;
+// para cuando viene un dato
+sentencia_tipo_dato::=
+    INT NOMBRE_DATO:a IGUAL entero_y_signos:b {:out = out + iteraciones+a+" "+"="+" "+b+"\n";String[] resul = new String[2];resul[0] = a;resul[1]=b;RESULT = resul;:} PTCOMA
+    | INT NOMBRE_DATO:a PTCOMA {:out = out + iteraciones+a+" "+"="+" "+"None"+"\n";:}
+    | STRING NOMBRE_DATO:a IGUAL DATO_STRING:b PTCOMA{:out = out + iteraciones+a+" "+"="+" "+b+"\n";:}
+    | STRING NOMBRE_DATO:a PTCOMA {:out = out + iteraciones+a+" "+"="+" "+"None"+"\n";:}
+    | CHAR NOMBRE_DATO:a IGUAL DATO_CHAR:b PTCOMA{:out = out + iteraciones+a+" "+"="+" "+b+"\n";:}
+    | CHAR NOMBRE_DATO:a PTCOMA {:out = out + iteraciones+a+" "+"="+" "+"None"+"\n";:}
+    | BOOL NOMBRE_DATO:a IGUAL True_False:b PTCOMA{:out = out + iteraciones+a+" "+"="+" "+b+"\n";:}
+    | BOOL NOMBRE_DATO:a PTCOMA {:out = out + iteraciones+a+" "+"="+" "+"None"+"\n";:}
+    | DOUBLE NOMBRE_DATO:a IGUAL entero_y_signos:b PTCOMA{:out = out + iteraciones+a+" "+"="+" "+b+"\n";:}
+    | DOUBLE NOMBRE_DATO:a PTCOMA {:out = out + iteraciones+a+" "+"="+" "+"None"+"\n";:}
+    | NOMBRE_DATO:a IGUAL entero_y_signos:b PTCOMA{:out = out + iteraciones+a+" "+"="+" "+b+"\n";:}
+    
+;
+True_False::=
+    FALSE {:RESULT = "false";:}
+    | TRUE {:RESULT = "true";:}
+;
+entero_y_signos_val::=
+
+;
+entero_y_signos::=
+    ENTERO:a MAS entero_y_signos:b {:RESULT = a+"+"+b;:}
+    |ENTERO:a MENOS entero_y_signos:b {:RESULT = a+"-"+b;:}
+    |ENTERO:a POR entero_y_signos:b {:RESULT = a+"*"+b;:}
+    |ENTERO:a DIV entero_y_signos:b {:RESULT = a+"/"+b;:}
+    |NOMBRE_DATO:a MAS entero_y_signos:b {:RESULT = a+"+"+b;:}
+    |NOMBRE_DATO:a MENOS entero_y_signos:b {:RESULT = a+"-"+b;:}
+    |NOMBRE_DATO:a POR entero_y_signos:b {:RESULT = a+"*"+b;:}
+    |NOMBRE_DATO:a DIV entero_y_signos:b {:RESULT = a+"/"+b;:}
+    |DECIMAL:a MAS entero_y_signos:b {:RESULT = a+"+"+b;:}
+    |DECIMAL:a MENOS entero_y_signos:b {:RESULT = a+"-"+b;:}
+    |DECIMAL:a POR entero_y_signos:b {:RESULT = a+"*"+b;:}
+    |DECIMAL:a DIV entero_y_signos:b {:RESULT = a+"/"+b;:}
+    |ENTERO:a {:RESULT =a;:}
+    |NOMBRE_DATO:a {:RESULT = a;:}
+    |DECIMAL:a {:RESULT = a;:}
+    
+;
+//---------------- Sentencia console.write
+console_write::=
+    CONSOLE PUNTO WRITE PAR_IZQ console_write_variables:a PAR_DER PTCOMA{:out = out + iteraciones+"print("+a+")\n";:}
+;
+console_write_variables::=
+    DATO_STRING:a MAS console_write_variables:b{:RESULT = a+","+b;:}
+    | NOMBRE_DATO:a MAS console_write_variables:b {:RESULT = a+","+b;:}
+    |NOMBRE_DATO:a {:RESULT = a;:} 
+    | DATO_STRING:a {:RESULT = a;:}
+;
+//-----------------If else y if else----------------    
+sentencia_if_else::=
+    IF PAR_IZQ parametros_if_else:a PAR_DER LLAVE_IZQ {:out = out + iteraciones+"if"+" "+a+":"+"\n";:} {:C_I = C_I+1;implementar_iteracion();:} sentencias LLAVE_DER {:C_I = C_I-1;implementar_iteracion();:}
+    | ELSE LLAVE_IZQ {:out = out + iteraciones+"else:"+"\n";:} {:C_I = C_I+1;implementar_iteracion();:} sentencias LLAVE_DER {:C_I = C_I-1;implementar_iteracion();:}
+    | ELSE IF PAR_IZQ parametros_if_else:a PAR_DER LLAVE_IZQ {:out = out + iteraciones+"elif"+" "+a+":"+"\n";:} {:C_I = C_I+1;implementar_iteracion();:} sentencias LLAVE_DER {:C_I = C_I-1;implementar_iteracion();:}
+;
+parametros_if_else::=
+    NOMBRE_DATO:a IGUAL IGUAL NOMBRE_DATO:b {:RESULT = a+" "+"=="+" "+b;:}
+    |NOMBRE_DATO:a IGUAL IGUAL ENTERO:b {:RESULT = a+" "+"=="+" "+b;:}
+    |NOMBRE_DATO:a MAYOR NOMBRE_DATO:b {:RESULT = a+" "+">"+" "+b;:}
+    |NOMBRE_DATO:a MAYOR ENTERO:b {:RESULT = a+" "+">"+" "+b;:}
+    |NOMBRE_DATO:a MENOR NOMBRE_DATO:b {:RESULT = a+" "+"<"+" "+b;:}
+    |NOMBRE_DATO:a MENOR ENTERO:b {:RESULT = a+" "+"<"+" "+b;:}
+    |NOMBRE_DATO:a MAYOR IGUAL NOMBRE_DATO:b {:RESULT = a+" "+">="+" "+b;:}
+    |NOMBRE_DATO:a MAYOR IGUAL ENTERO:b {:RESULT = a+" "+">="+" "+b;:}
+    |NOMBRE_DATO:a MENOR IGUAL NOMBRE_DATO:b {:RESULT = a+" "+"<="+" "+b;:}
+    |NOMBRE_DATO:a MENOR IGUAL ENTERO:b {:RESULT = a+" "+"<="+" "+b;:}
+    |NOMBRE_DATO:a DISTINTO IGUAL NOMBRE_DATO:b {:RESULT = a+" "+"!="+" "+b;:}
+    |NOMBRE_DATO:a DISTINTO IGUAL ENTERO:b {:RESULT = a+" "+"!="+" "+b;:}
+    |TRUE:a {:RESULT = a;:}
+    |FALSE:a {:RESULT = a;:}
+    |NOMBRE_DATO:a {:RESULT = a;:}
+    
+;
+//--------------- Ciclo For -------------------------
+sentencia_for::=
+    FOR PAR_IZQ sentencia_for_parametros:a PAR_DER LLAVE_IZQ {:out = out + iteraciones+a+"\n";:} {:C_I = C_I+1;implementar_iteracion();:} sentencias LLAVE_DER {:C_I = C_I-1;implementar_iteracion();:}
+;
+sentencia_for_parametros::=
+    INT NOMBRE_DATO:a IGUAL ENTERO:b PTCOMA NOMBRE_DATO MENOR ENTERO:c PTCOMA NOMBRE_DATO MAS MAS {:int dat = Integer.parseInt(b);dat = dat+1;RESULT = "for "+a+" in "+"range("+dat+","+c+"):";:} 
+    
+;
+//---------------- Ciclo While------------------------
+sentencia_while::=
+    WHILE PAR_IZQ parametros_if_else:a PAR_DER LLAVE_IZQ {:out = out + iteraciones+"while "+a+":"+"\n";:}  {:C_I = C_I+1;implementar_iteracion();:} sentencias LLAVE_DER {:C_I = C_I-1;implementar_iteracion();:}
+;
+
+//---------------- Ciclo Do While------------------------
+sentencia_do_while::=
+    sentencia_do_while_aux_2:a {:C_I = C_I+1;implementar_iteracion();:} sentencias {:out = out + iteraciones +a+" "+"="+" "+a+" "+"+"+" "+"1\n";:} LLAVE_DER WHILE PAR_IZQ parametros_if_else:x {:out = out + iteraciones+"if("+ x +")"+"\n";:} PAR_DER PTCOMA {:out = out + iteraciones+"    "+"break\n";:} {:C_I = C_I-1;implementar_iteracion();:}
+;
+sentencia_do_while_aux_2::=
+    sentencia_tipo_dato:a DO LLAVE_IZQ {:String _a = a[0];String _b = a[1];out = out + iteraciones+"i = "+_b+"\n"+iteraciones+"while true:"+"\n";RESULT = _a;:} 
+;
+//----------------- Condicional Switch--------------------
+sentencia_switch::=
+    SWITCH PAR_IZQ NOMBRE_DATO:a PAR_DER LLAVE_IZQ {:out = out + iteraciones+"def switch(case,precio):\n";C_I = C_I+1;implementar_iteracion();:}{:out = out + iteraciones+"switcher = {\n";C_I = C_I+1;implementar_iteracion();:} sentencias_valores_switch LLAVE_DER {:C_I = C_I-1;implementar_iteracion();:}
+;
+sentencias_valores_switch::=
+    sentencias_valores_switch sentencia_valores_switch
+    | sentencia_valores_switch
+;
+sentencia_valores_switch::=
+    CASE ENTERO:a {:switch_contador = Integer.parseInt(a);out = out + iteraciones+ a +":\n";:}  {:C_I = C_I+1;implementar_iteracion();:} DOSPUT sentencias {:C_I = C_I-1;implementar_iteracion();:}
+    |DEFAULT DOSPUT {:switch_contador = switch_contador + 1;out = out + iteraciones+ switch_contador +":\n";:}{:C_I = C_I+1;implementar_iteracion();:}sentencias{:C_I = C_I-1;implementar_iteracion();:}{:C_I = C_I-1;implementar_iteracion();:} {:out = out + iteraciones +"}\n";:}
+    
+;
+//----------------- Funcion Definir Globales
+sentencias_aux::=
+    sentencias_aux sentencia_aux
+    | sentencia_aux
+;
+sentencia_aux::=
+    STRING NOMBRE_DATO:a IGUAL DATO_STRING:b PTCOMA {:String _b = b.replaceAll("\"", "");list_V_G.Insertar_V_G(new V_G(a,_b));:}
+    |DOUBLE NOMBRE_DATO:a IGUAL DECIMAL:b PTCOMA {:list_V_G.Insertar_V_G(new V_G(a,b));:}
+    |DOUBLE NOMBRE_DATO:a IGUAL DOLLAR LLAVE_IZQ NEWVALOR COMA DATO_STRING:b COMA DATO_STRING:c LLAVE_DER PTCOMA {:String _b = b.replaceAll("\"", "");String _c = c.replaceAll("\"", "");String valor_llave = list_json.busqueda_simbols_json_llave(_b,_c);list_V_G.Insertar_V_G(new V_G(a,valor_llave));:}
+     
+;
+sentencia_definir_globales::=
+    VOID DEFINIR_GLOVALES PAR_IZQ PAR_DER LLAVE_IZQ sentencias_aux LLAVE_DER
+;
+//----------------- funcion Graficar Barras
+
+sentencias_graficar::=
+    sentencias_graficar sentencia_graficar
+    | sentencia_graficar
+;
+sentencias_ejex_valores::=
+    NOMBRE_DATO:a {:String _a = list_V_G.busqueda_list_V_G(a);grafica_barras.Get_Ejex().Insertar_DatosEjex(new DatosEjex(_a));:}
+    |DATO_STRING:a {:String _a = a.replaceAll("\"","");grafica_barras.Get_Ejex().Insertar_DatosEjex(new DatosEjex(_a));:}
+    |DOLLAR LLAVE_IZQ NEWVALOR COMA DATO_STRING:a COMA DATO_STRING:b LLAVE_DER {:String filename = a.replaceAll("\"","");String llave = b.replaceAll("\"","");String valorllave = list_json.busqueda_simbols_json_llave(filename,llave);grafica_barras.Get_Ejex().Insertar_DatosEjex(new DatosEjex(valorllave));:}
+    |COMA
+;
+sentencias_ejex::=
+    sentencias_ejex sentencias_ejex_valores
+    |sentencias_ejex_valores
+;
+sentencias_valores_datos::=
+    DECIMAL:a {:grafica_barras.Get_valores().Insertar_DatosValores(new DatosValores(a));:}
+    |NOMBRE_DATO:a {:String _a = list_V_G.busqueda_list_V_G(a);grafica_barras.Get_valores().Insertar_DatosValores(new DatosValores(_a));:}
+    |DOLLAR LLAVE_IZQ NEWVALOR COMA DATO_STRING:a COMA DATO_STRING:b LLAVE_DER {:String filename = a.replaceAll("\"","");String llave = b.replaceAll("\"","");String valorllave = list_json.busqueda_simbols_json_llave(filename,llave);grafica_barras.Get_valores().Insertar_DatosValores(new DatosValores(valorllave));:}
+    |COMA
+;
+sentencias_valores::=
+    sentencias_valores sentencias_valores_datos
+    | sentencias_valores_datos
+    
+;
+sentencia_graficar::=
+    STRING TITULO IGUAL NOMBRE_DATO:a PTCOMA {:String _a = list_V_G.busqueda_list_V_G(a);grafica_barras.Set_Titulo(_a);:}
+    |STRING TITULO IGUAL DATO_STRING:a PTCOMA {:String _a = a.replaceAll("\"", "");grafica_barras.Set_Titulo(_a);:}
+    |STRING TITULO IGUAL DOLLAR LLAVE_IZQ NEWVALOR COMA DATO_STRING:a COMA DATO_STRING:b LLAVE_DER {:String filename = a.replaceAll("\"","");String llave = b.replaceAll("\"","");String valorllave = list_json.busqueda_simbols_json_llave(filename,llave);grafica_barras.Set_Titulo(valorllave);:}
+    |STRING COR_IZQ COR_DER EJEX IGUAL LLAVE_IZQ sentencias_ejex LLAVE_DER PTCOMA
+    |DOUBLE COR_IZQ COR_DER VALORES IGUAL LLAVE_IZQ sentencias_valores LLAVE_DER PTCOMA
+    |STRING TITULOX IGUAL NOMBRE_DATO:a PTCOMA {:String _a = list_V_G.busqueda_list_V_G(a);grafica_barras.Set_Titulox(_a);:}
+    |STRING TITULOY IGUAL NOMBRE_DATO:a PTCOMA {:String _a = list_V_G.busqueda_list_V_G(a);grafica_barras.Set_Tituloy(_a);:}
+    |STRING TITULOX IGUAL DATO_STRING:a PTCOMA {:String _a = a.replaceAll("\"", "");grafica_barras.Set_Titulox(_a);:}
+    |STRING TITULOY IGUAL DATO_STRING:a PTCOMA {:String _a = a.replaceAll("\"", "");grafica_barras.Set_Tituloy(_a);:}
+    |STRING TITULOX IGUAL DOLLAR LLAVE_IZQ NEWVALOR COMA DATO_STRING:a COMA DATO_STRING:b LLAVE_DER {:String filename = a.replaceAll("\"","");String llave = b.replaceAll("\"","");String valorllave = list_json.busqueda_simbols_json_llave(filename,llave);grafica_barras.Set_Titulox(valorllave);:}
+    |STRING TITULOY IGUAL DOLLAR LLAVE_IZQ NEWVALOR COMA DATO_STRING:a COMA DATO_STRING:b LLAVE_DER {:String filename = a.replaceAll("\"","");String llave = b.replaceAll("\"","");String valorllave = list_json.busqueda_simbols_json_llave(filename,llave);grafica_barras.Set_Tituloy(valorllave);:}
+;
+sentencia_grafica_barras::=
+    VOID GRAFICA_BARRAS PAR_IZQ PAR_DER LLAVE_IZQ sentencias_graficar LLAVE_DER
+;
+// Funcion graficar pastel
+sentencia_grafica_pie::=
+    VOID GRAFICA_PIE PAR_IZQ PAR_DER LLAVE_IZQ sentencias_graficar_pie LLAVE_DER
+;
+sentencias_graficar_pie::=
+    sentencias_graficar_pie sentencia_graficar_pie
+    | sentencia_graficar_pie
+;
+sentencia_graficar_pie::=
+    STRING TITULO IGUAL NOMBRE_DATO:a PTCOMA {:String _a = list_V_G.busqueda_list_V_G(a);grafica_pie.Set_Titulo(_a);:}
+    |STRING TITULO IGUAL DATO_STRING:a PTCOMA {:String _a = a.replaceAll("\"", "");grafica_pie.Set_Titulo(_a);:}
+    |STRING TITULO IGUAL DOLLAR LLAVE_IZQ NEWVALOR COMA DATO_STRING:a COMA DATO_STRING:b LLAVE_DER PTCOMA{:String filename = a.replaceAll("\"","");String llave = b.replaceAll("\"","");String valorllave = list_json.busqueda_simbols_json_llave(filename,llave);grafica_pie.Set_Titulo(valorllave);:}
+    |STRING COR_IZQ COR_DER EJEX IGUAL LLAVE_IZQ sentencias_ejex_pie LLAVE_DER PTCOMA
+    |DOUBLE COR_IZQ COR_DER VALORES IGUAL LLAVE_IZQ sentencias_valores_pie LLAVE_DER PTCOMA
+;
+sentencias_ejex_valores_pie::=
+    NOMBRE_DATO:a {:String _a = list_V_G.busqueda_list_V_G(a);grafica_pie.Get_Ejex().Insertar_DatosEjex(new DatosEjex(_a));:}
+    |DATO_STRING:a {:String _a = a.replaceAll("\"","");grafica_pie.Get_Ejex().Insertar_DatosEjex(new DatosEjex(_a));:}
+    |DOLLAR LLAVE_IZQ NEWVALOR COMA DATO_STRING:a COMA DATO_STRING:b LLAVE_DER {:String filename = a.replaceAll("\"","");String llave = b.replaceAll("\"","");String valorllave = list_json.busqueda_simbols_json_llave(filename,llave);grafica_pie.Get_Ejex().Insertar_DatosEjex(new DatosEjex(valorllave));:}
+    |COMA 
+;
+sentencias_ejex_pie::=
+    sentencias_ejex_pie sentencias_ejex_valores_pie
+    |sentencias_ejex_valores_pie
+;
+sentencias_valores_datos_pie::=
+    DECIMAL:a {:grafica_pie.Get_valores().Insertar_DatosValores(new DatosValores(a));:}
+    |NOMBRE_DATO:a {:String _a = list_V_G.busqueda_list_V_G(a);grafica_pie.Get_valores().Insertar_DatosValores(new DatosValores(_a));:}
+    |DOLLAR LLAVE_IZQ NEWVALOR COMA DATO_STRING:a COMA DATO_STRING:b LLAVE_DER {:String filename = a.replaceAll("\"","");String llave = b.replaceAll("\"","");String valorllave = list_json.busqueda_simbols_json_llave(filename,llave);grafica_pie.Get_valores().Insertar_DatosValores(new DatosValores(valorllave));:}
+    |COMA
+;
+sentencias_valores_pie::=
+    sentencias_valores_pie sentencias_valores_datos_pie
+    | sentencias_valores_datos_pie
+    
+;

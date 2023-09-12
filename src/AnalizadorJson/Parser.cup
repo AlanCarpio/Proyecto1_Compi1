@@ -1,0 +1,56 @@
+package AnalizadorJson; 
+import java_cup.runtime.*;
+import Model.DoublyLinkedList;
+import Model.Symbols;
+import Model.Symbols_Json;
+
+%class Parser_Json;
+
+parser code
+{://Codigo visible
+    public static DoublyLinkedList list_json;
+    
+    public void syntax_error(Symbol s){
+        System.out.println("Error R de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+        System.out.println("Error NR de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
+    }
+
+:}
+
+
+terminal String DOSPUT,LLAVE_DER,LLAVE_IZQ,COMA,COMILLAS;
+terminal String DECIMAL,NOMBRE_DATO;
+
+non terminal ini;
+non terminal Inicio;
+non terminal sentencias;
+non terminal String sentencia;
+non terminal String datos;
+
+start with ini;
+ini::= Inicio 
+;
+Inicio::=
+    LLAVE_IZQ sentencias LLAVE_DER
+    | LLAVE_IZQ LLAVE_DER
+;
+sentencias::=
+    sentencias sentencia
+    |sentencia
+;
+datos::=
+    NOMBRE_DATO:a {:RESULT = a.replaceAll("\"", "");:}
+    |DECIMAL:a {:RESULT = a;:}
+;
+/*
+;;list_json.Insertar_Symbolo_Json(new Symbols_Json(_c,d));
+list_json.Insertar_Symbolo_Json(new Symbols_Json(_a,_b));list_json.Insertar_Symbolo_Json(new Symbols_Json(_c,d));
+*/
+sentencia::=
+    datos:a DOSPUT datos:b COMA {:list_json.Insertar_Symbolo_Json(new Symbols_Json(a,b));:}
+    | datos:a DOSPUT datos:b {:list_json.Insertar_Symbolo_Json(new Symbols_Json(a,b));:}
+
+;
