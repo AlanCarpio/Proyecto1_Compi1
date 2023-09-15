@@ -5,15 +5,23 @@
 package View;
 import Model.DoublyLinkedList;
 import Model.Json_files;
-import Model.Symbols_Json;
+
 import Model.GraficaBarras;
 import Model.GraficaPie;
+import PagesHtml.PageHTML;
 import AnalizadorStatPy.Generador;
+
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import AnalizadorJson.Generador_Json;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import org.jfree.chart.ChartFactory;
@@ -22,6 +30,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
+import PagesHtml.PageHTML;
 
 
 
@@ -49,8 +58,6 @@ public class Panel extends javax.swing.JFrame {
     private void initComponents() {
 
         jFileChooser1 = new javax.swing.JFileChooser();
-        FileNameExtensionFilter imgFilter = new FileNameExtensionFilter("Json & sp", "json", "sp");
-        jFileChooser1.setFileFilter(imgFilter);
         jDialog1 = new javax.swing.JDialog();
         Etiqueda_Analizador = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -109,6 +116,11 @@ public class Panel extends javax.swing.JFrame {
         });
 
         Archivo_StatPY.setText("Archivo StatPY");
+        Archivo_StatPY.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Archivo_StatPYActionPerformed(evt);
+            }
+        });
         jMenu1.add(Archivo_StatPY);
 
         Archivo_json.setText("Archivo Json");
@@ -120,9 +132,19 @@ public class Panel extends javax.swing.JFrame {
         jMenu1.add(Archivo_json);
 
         guardar.setText("Guardar");
+        guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                guardarActionPerformed(evt);
+            }
+        });
         jMenu1.add(guardar);
 
         Guardar_como.setText("Guardar Como");
+        Guardar_como.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Guardar_comoActionPerformed(evt);
+            }
+        });
         jMenu1.add(Guardar_como);
 
         jMenuBar1.add(jMenu1);
@@ -171,6 +193,11 @@ public class Panel extends javax.swing.JFrame {
         jMenu4.add(jMenuItem1);
 
         jMenuItem2.setText("Reporte de Errores Léxicos");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem2);
 
         jMenuBar1.add(jMenu4);
@@ -235,11 +262,12 @@ public class Panel extends javax.swing.JFrame {
     
 
     private void Archivo_jsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Archivo_jsonActionPerformed
-        
+        dirrecion_archivo = null;
         int result = jFileChooser1.showOpenDialog(new JFrame());
         if (result == jFileChooser1.APPROVE_OPTION) {
             // Obtener el archivo seleccionado
             File selectedFile = jFileChooser1.getSelectedFile();
+            dirrecion_archivo = selectedFile;
             file_name = jFileChooser1.getDescription(selectedFile);
             list_json_files.Insertar_Symbolo(new Json_files(file_name));
             
@@ -259,7 +287,7 @@ public class Panel extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu1ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
+        pagina.CrearArchivoHTML();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void EjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EjecutarActionPerformed
@@ -273,9 +301,10 @@ public class Panel extends javax.swing.JFrame {
     private void EjecutarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EjecutarMouseClicked
         
         if (Etiqueda_Analizador.getText().equalsIgnoreCase("analizador: statpy")){
+            pagina = new PageHTML();
             String codigo_fuente = Entrada.getText();
             Generador gen = new Generador();
-            Salida.setText(gen.Ejecutar(codigo_fuente, list_D_G,list_json_files,grafica_barras,grafica_pie));
+            Salida.setText(gen.Ejecutar(codigo_fuente, list_D_G,list_json_files,grafica_barras,grafica_pie,pagina));
             if (grafica_barras.Get_Titulo().equalsIgnoreCase("")) {
                 
             }else{
@@ -308,6 +337,60 @@ public class Panel extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_EjecutarMouseClicked
+
+    private void Archivo_StatPYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Archivo_StatPYActionPerformed
+        dirrecion_archivo = null;
+        int result = jFileChooser1.showOpenDialog(new JFrame());
+        if (result == jFileChooser1.APPROVE_OPTION) {
+            // Obtener el archivo seleccionado
+            File selectedFile = jFileChooser1.getSelectedFile();
+            dirrecion_archivo = selectedFile;
+            
+            
+            // Llamar a un método para cargar y convertir el contenido del archivo JSON a una cadena
+            String jsonContent = loadJsonFile(selectedFile);
+
+            // Imprimir la cadena JSON en la consola
+            Entrada.setText(jsonContent);
+        }
+    }//GEN-LAST:event_Archivo_StatPYActionPerformed
+
+    private void Guardar_comoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Guardar_comoActionPerformed
+        int result = jFileChooser1.showSaveDialog(new JFrame());
+        if (result == jFileChooser1.APPROVE_OPTION) {
+            // Obtener el archivo seleccionado
+            File selectedFile = jFileChooser1.getSelectedFile();
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFile));
+                writer.write(Entrada.getText());
+                writer.close();
+                JOptionPane.showMessageDialog(new JFrame(), "Contenido guardado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(new JFrame(), "Error al guardar el contenido.", "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_Guardar_comoActionPerformed
+
+    private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
+        if (dirrecion_archivo == null){
+            JOptionPane.showMessageDialog(new JFrame(), "No hay ni un arhico cargado", "Error", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(dirrecion_archivo));
+            writer.write(Entrada.getText());
+            writer.close();
+            JOptionPane.showMessageDialog(new JFrame(), "Contenido guardado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(new JFrame(), "Error al guardar el contenido.", "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_guardarActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        pagina.CrearArchivoHTMLError();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
     public void Jfreechart_Barras(){
         DefaultCategoryDataset dataset = grafica_barras.Get_Ejex().valores_list_grafica_barras(grafica_barras.Get_valores());
         JFreeChart chart = ChartFactory.createBarChart(
@@ -350,7 +433,9 @@ public class Panel extends javax.swing.JFrame {
     private DoublyLinkedList list_json_files = new DoublyLinkedList();
     private GraficaBarras grafica_barras = new GraficaBarras();
     private GraficaPie grafica_pie = new GraficaPie();
+    private PageHTML pagina = new PageHTML();
     private String file_name = "";
+    private File dirrecion_archivo;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Analizador_StatPY;
     private javax.swing.JMenuItem Analizador_json;

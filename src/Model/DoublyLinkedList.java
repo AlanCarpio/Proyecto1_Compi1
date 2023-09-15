@@ -1,14 +1,8 @@
 package Model;
-import Model.Nodo;
-import Model.Symbols;
-import Model.Symbols_Json;
-import Model.Json_files;
-import Model.V_G;
-import Model.DatosEjex;
-import Model.DatosValores;
+
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.general.PieDataset;
+
 public class DoublyLinkedList {
     private Nodo Inicio;
     private Nodo Final;
@@ -93,21 +87,27 @@ public class DoublyLinkedList {
     /*-------------------------------------------------------------- */
     
     //Iterar simbolos de leidos en el scanner
-    public void Iterar_Simbolos_tokens(){
+    public String Iterar_Simbolos_tokens(){
         Nodo aux = Inicio;
+        String datos_tabla = "";
         while (aux !=null){
-            System.out.println("Lexema: "+aux.symbols.Get_Simbolo()+"Token: "+aux.symbols.Get_Token()+" Fila: "+aux.symbols.Get_Fila()+" Columna: "+aux.symbols.Get_Columna());
+           
+            datos_tabla = datos_tabla + "<tr>\n" +
+"            <th>"+aux.symbols.Get_Simbolo() +"</th>\n" +
+"            <th>"+aux.symbols.Get_Token() +"</th>\n" +
+"            <th>"+aux.symbols.Get_Fila() +"</th>\n" +
+"            <th>"+aux.symbols.Get_Columna() +"</th>\n" +
+"            </tr>\n";
             aux = aux.Siguiente;
         }
+        datos_tabla = datos_tabla + "   </table>\n" +   
+        "</body>\n" +
+        "</html>";
+        return datos_tabla;
+        
     }
     // Iterar simbolos no esperados en el lenguaje
-    public void Iterar_Simbolos_Error(){
-        Nodo aux = Inicio;
-        while (aux !=null){
-            System.out.println("Error Lexico Encontrado: "+ aux.symbols.Get_Simbolo());
-            aux = aux.Siguiente;
-        }
-    }
+    
     // Iterar funcion Variables Globales
     public void Iterar_D_G(){
         Nodo aux = Inicio;
@@ -201,4 +201,5 @@ public class DoublyLinkedList {
         
         return dataset;
     }
+    
 }

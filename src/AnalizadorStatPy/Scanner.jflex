@@ -28,6 +28,7 @@ COR_IZQ  = "["
 COR_DER  = "]" 
 LLAVE_IZQ = "{"
 LLAVE_DER = "}"
+DOBLECOR = "[]"
 
 //----------
 MAS = "+"
@@ -38,11 +39,12 @@ PTCOMA = ";"
 DOSPUT = ":"
 PUNTO = "."
 IGUAL = "="
+DOBLEIGUAL = "=="
 DOLLAR = "$"
 COMA = ","
 MENOR = "<"
 MAYOR = ">"
-DISTINTO = "!"
+DISTINTO = "!="
 //palabras reservadas
 // Funciones
 VOID = "void"
@@ -56,6 +58,11 @@ EJEX = "ejex"
 VALORES = "valores"
 TITULOX = "titulox"
 TITULOY = "tituloy"
+// AND OR 
+AND = "&&"
+OR = "||"
+NOT = "!"
+
 //buquels y if y switch
 IF = "if"
 ELSE = "else"
@@ -90,7 +97,11 @@ COMEN_2 = "/*"([a-zA-Z0-9]+|[^*])*?"*/"
 SPACE   = [\ \r\t\f\t]
 ENTER   = [\ \n]
 %%
-
+<YYINITIAL> {DOBLEIGUAL}   {  List_Tokens_Scanner.Insertar_Symbolo(new Symbols(yyline,yycolumn,yytext(),"DOBLEIGUAL"));return new Symbol(sym.DOBLEIGUAL, yyline, yycolumn,yytext());} 
+<YYINITIAL> {AND}   {  List_Tokens_Scanner.Insertar_Symbolo(new Symbols(yyline,yycolumn,yytext(),"AND"));return new Symbol(sym.AND, yyline, yycolumn,yytext());} 
+<YYINITIAL> {OR}   {  List_Tokens_Scanner.Insertar_Symbolo(new Symbols(yyline,yycolumn,yytext(),"OR"));return new Symbol(sym.OR, yyline, yycolumn,yytext());} 
+<YYINITIAL> {NOT}   {  List_Tokens_Scanner.Insertar_Symbolo(new Symbols(yyline,yycolumn,yytext(),"NOT"));return new Symbol(sym.NOT, yyline, yycolumn,yytext());} 
+<YYINITIAL> {DOBLECOR}   {  List_Tokens_Scanner.Insertar_Symbolo(new Symbols(yyline,yycolumn,yytext(),"DOBLECOR"));return new Symbol(sym.DOBLECOR, yyline, yycolumn,yytext());} 
 <YYINITIAL> {GRAFICA_PIE}   {  List_Tokens_Scanner.Insertar_Symbolo(new Symbols(yyline,yycolumn,yytext(),"GRAFICA_PIE"));return new Symbol(sym.GRAFICA_PIE, yyline, yycolumn,yytext());} 
 <YYINITIAL> {TITULO}   {  List_Tokens_Scanner.Insertar_Symbolo(new Symbols(yyline,yycolumn,yytext(),"TITULO"));return new Symbol(sym.TITULO, yyline, yycolumn,yytext());} 
 <YYINITIAL> {EJEX}   {  List_Tokens_Scanner.Insertar_Symbolo(new Symbols(yyline,yycolumn,yytext(),"EJEX"));return new Symbol(sym.EJEX, yyline, yycolumn,yytext());} 

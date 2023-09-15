@@ -14,6 +14,7 @@ public class Proyecto {
         panel.Ejecutar_Panel();
         
         //Generador_Json gen_json = new Generador_Json();
+        //gen_json.compilar();
         //gen.Ejecutar("void main(){\n}");
         
     

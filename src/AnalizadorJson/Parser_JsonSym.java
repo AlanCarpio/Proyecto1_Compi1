@@ -9,14 +9,14 @@ package AnalizadorJson;
 public class Parser_JsonSym {
   /* terminals */
   public static final int LLAVE_IZQ = 4;
+  public static final int NOMBRE_DATO = 8;
   public static final int DECIMAL = 7;
-  public static final int COMA = 5;
-  public static final int LLAVE_DER = 3;
-  public static final int DOSPUT = 2;
   public static final int EOF = 0;
   public static final int COMILLAS = 6;
-  public static final int NOMBRE_DATO = 8;
   public static final int error = 1;
+  public static final int COMA = 5;
+  public static final int DOSPUT = 2;
+  public static final int LLAVE_DER = 3;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",

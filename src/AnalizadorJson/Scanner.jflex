@@ -26,6 +26,8 @@ SPACE   = [\ \r\t\f\t]
 ENTER   = [\ \n]
 NOMBRE_DATO = \"[^\"]*\"
 DECIMAL=[0-9]+("."[  |0-9]+)?
+COMEN_1 = \/\/[^\n]*\n
+COMEN_2 = "/*"([a-zA-Z0-9]+|[^*])*?"*/"
 
 %%
 
@@ -37,6 +39,8 @@ DECIMAL=[0-9]+("."[  |0-9]+)?
 <YYINITIAL> {COMA} {return new Symbol(Parser_JsonSym.COMA, yyline, yycolumn,yytext());}
 <YYINITIAL> {SPACE} {} 
 <YYINITIAL> {ENTER} {} 
+<YYINITIAL> {COMEN_1} {} 
+<YYINITIAL> {COMEN_2} {} 
 
 . {
     System.out.println("Este es un error lexico: "+yytext()+

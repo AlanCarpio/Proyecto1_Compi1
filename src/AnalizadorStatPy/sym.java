@@ -10,59 +10,64 @@ public class sym {
   /* terminals */
   public static final int PAR_DER = 3;
   public static final int DISTINTO = 21;
-  public static final int CHAR = 47;
+  public static final int DOBLEIGUAL = 22;
+  public static final int CHAR = 52;
   public static final int POR = 11;
   public static final int DATO_CHAR = 8;
-  public static final int ENTERO = 52;
-  public static final int CASE = 28;
-  public static final int DOUBLE = 49;
-  public static final int INT = 45;
+  public static final int ENTERO = 57;
+  public static final int CASE = 33;
+  public static final int DOUBLE = 54;
+  public static final int INT = 50;
   public static final int COR_DER = 5;
-  public static final int DATO_STRING = 54;
-  public static final int GRAFICA_BARRAS = 36;
-  public static final int FOR = 33;
-  public static final int TITULOY = 43;
-  public static final int WRITE = 32;
-  public static final int TITULOX = 42;
+  public static final int DATO_STRING = 59;
+  public static final int GRAFICA_BARRAS = 41;
+  public static final int FOR = 38;
+  public static final int TITULOY = 48;
+  public static final int WRITE = 37;
+  public static final int TITULOX = 47;
   public static final int LLAVE_IZQ = 6;
-  public static final int EJEX = 40;
+  public static final int NOT = 28;
+  public static final int AND = 27;
+  public static final int EJEX = 45;
   public static final int IGUAL = 16;
-  public static final int BOOL = 48;
-  public static final int GRAFICA_PIE = 37;
-  public static final int TITULO = 39;
+  public static final int OR = 26;
+  public static final int BOOL = 53;
+  public static final int GRAFICA_PIE = 42;
+  public static final int TITULO = 44;
   public static final int DIV = 12;
-  public static final int NOMBRE_DATO = 55;
-  public static final int MAIN = 23;
-  public static final int IF = 24;
-  public static final int DECIMAL = 53;
+  public static final int NOMBRE_DATO = 60;
+  public static final int MAIN = 24;
+  public static final int IF = 29;
+  public static final int DECIMAL = 58;
   public static final int EOF = 0;
-  public static final int VALORES = 41;
-  public static final int TRUE = 50;
+  public static final int VALORES = 46;
+  public static final int TRUE = 55;
   public static final int error = 1;
   public static final int COMA = 18;
   public static final int MENOS = 10;
   public static final int MENOR = 19;
   public static final int PAR_IZQ = 2;
-  public static final int VOID = 22;
+  public static final int VOID = 23;
   public static final int DOSPUT = 14;
-  public static final int SWITCH = 34;
-  public static final int DEFINIR_GLOVALES = 35;
+  public static final int SWITCH = 39;
+  public static final int DEFINIR_GLOVALES = 40;
   public static final int MAYOR = 20;
-  public static final int ELSE = 25;
+  public static final int DOBLECOR = 25;
+  public static final int ELSE = 30;
   public static final int LLAVE_DER = 7;
   public static final int PUNTO = 15;
-  public static final int WHILE = 26;
+  public static final int WHILE = 31;
   public static final int DOLLAR = 17;
-  public static final int DEFAULT = 30;
-  public static final int FLOAT = 46;
+  public static final int DEFAULT = 35;
+  public static final int FLOAT = 51;
   public static final int COR_IZQ = 4;
   public static final int PTCOMA = 13;
-  public static final int STRING = 44;
-  public static final int BRAKE = 29;
-  public static final int NEWVALOR = 38;
-  public static final int FALSE = 51;
-  public static final int DO = 27;
-  public static final int CONSOLE = 31;
+  public static final int STRING = 49;
+  public static final int BRAKE = 34;
+  public static final int NEWVALOR = 43;
+  public static final int FALSE = 56;
+  public static final int CONSOLE = 36;
+  public static final int DO = 32;
   public static final int MAS = 9;
   public static final String[] terminalNames = new String[] {
   "EOF",
@@ -87,8 +92,13 @@ public class sym {
   "MENOR",
   "MAYOR",
   "DISTINTO",
+  "DOBLEIGUAL",
   "VOID",
   "MAIN",
+  "DOBLECOR",
+  "OR",
+  "AND",
+  "NOT",
   "IF",
   "ELSE",
   "WHILE",
